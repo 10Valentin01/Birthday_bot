@@ -7,10 +7,10 @@ token = '5899670736:AAHSOd4tCcD05niucPNo9-m4pTWJ-tx9zzM'
 provider_token = '381764678:TEST:59087'
 bot = telebot.TeleBot(token)
 
-
+# Создаем словарь, где будут раниться валюта и количество денег от каждого пользователя, аналог машины состояний
 money = {}
 
-
+# Стартовая функция с отправкой фото, приветствия и клавиатуры для выбора валюты
 @bot.message_handler(commands=['start'])
 def start_func(message):
     with open('support_us.jpg', 'rb') as photo:
@@ -19,21 +19,27 @@ def start_func(message):
                                           'ты хотел прислать подарок ему на такой знаменательный день!', reply_markup=kb_usd_rub)
     money[message.chat.id] = {}
 
+
+# Отправка клавиатуры с русской валютой
 @bot.message_handler(func=lambda message: message.text == 'RUB')
 def rub_keyboard(message):
     bot.send_message(message.chat.id, 'Выбери, сколько хочешь перевести, коллега)', reply_markup=kb_price_rub)
     money[message.chat.id]['Currency'] = "rub"
 
+
+# Отправка клавиатуры с долларами
 @bot.message_handler(func=lambda message: message.text == 'USD')
 def usd_keyboard(message):
     bot.send_message(message.chat.id, 'Выбери, сколько хочешь перевести, коллега)', reply_markup=kb_price_usd)
     money[message.chat.id]['Currency'] = "usd"
 
 
+# Списки для реакции именно на эти сообщения
 money_list_rub = ['50 рублей', '200 рублей', '500 рублей', '1000 рублей']
 money_list_usd = ['50 долларов', '200 долларов', '500 долларов', '1000 долларов']
 
 
+# Функция для подверждения пользователем суммы и вылюты
 @bot.message_handler(func=lambda message: message.text in money_list_rub)
 def money_func(message):
     rub = message.text.split()[0]
@@ -44,6 +50,7 @@ def money_func(message):
                      f' в количестве {money[message.chat.id]["amount"]}?', reply_markup=kb_yes_no)
 
 
+# Функция для подверждения пользователем суммы и вылюты
 @bot.message_handler(func=lambda message: message.text in money_list_usd)
 def money_func(message):
     usd = message.text.split()[0]
@@ -52,6 +59,8 @@ def money_func(message):
                                       f'в количестве {money[message.chat.id]["amount"]}?', reply_markup=kb_yes_no)
 
 
+
+# Реакция на кнопки "Нет" и "Сменить валюту"
 @bot.message_handler(func=lambda message: message.text == 'Нет' or message.text == 'Сменить валюту')
 def back_to_start(message):
     bot.send_message(message.chat.id, 'Хорошо, давай начнем заново, выбери валюту, '
@@ -59,6 +68,7 @@ def back_to_start(message):
 
 
 
+# После подверждения валюты и суммы начинаем платеж
 @bot.message_handler(func=lambda message: message.text == 'Да')
 def money_present(message):
     if money[message.chat.id]['Currency'] == 'usd':
@@ -101,6 +111,12 @@ def got_payment(message):
 @bot.message_handler(func=lambda message: message.text == 'Закрыть')
 def close_func(message):
     bot.send_message(message.chat.id, "Зачем ты меня закрываешь? Ты что, не хочешь порадовать человека?")
+
+
+@bot.message_handler()
+def other_message(message):
+    bot.send_message(message.chat.id, 'Мы тут вопрос денег решаем, а не переписываемся) '
+                                      'Давай снова начнем с выбора валюты!', reply_markup=kb_usd_rub)
 
 
 bot.infinity_polling(skip_pending=True)
