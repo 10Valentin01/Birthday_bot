@@ -61,7 +61,6 @@ def back_to_start(message):
 
 @bot.message_handler(func=lambda message: message.text == 'Да')
 def money_present(message):
-    print(money[message.chat.id]['Currency'], money[message.chat.id]['amount'])
     if money[message.chat.id]['Currency'] == 'usd':
         bot.send_invoice(chat_id=message.chat.id,
                          title='На день рождения коллеги!',
@@ -97,6 +96,12 @@ def got_payment(message):
         bot.send_message(message.chat.id, 'Урааа, спасибо тебе!')
     else:
         bot.send_message(message.chat.id, 'Урааа, SUPERспасибо тебе!')
+
+
+@bot.message_handler(func=lambda message: message.text == 'Закрыть')
+def close_func(message):
+    bot.send_message(message.chat.id, "Зачем ты меня закрываешь? Ты что, не хочешь порадовать человека?")
+
 
 bot.infinity_polling(skip_pending=True)
 
