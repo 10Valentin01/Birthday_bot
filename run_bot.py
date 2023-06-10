@@ -3,8 +3,8 @@ from telebot.types import LabeledPrice, ShippingOption
 from KeyBoard import kb_price_usd, kb_usd_rub, kb_price_rub, kb_yes_no
 
 
-token = '5899670736:AAHSOd4tCcD05niucPNo9-m4pTWJ-tx9zzM'
-provider_token = '381764678:TEST:59087'
+token = 'your token'
+provider_token = ''
 bot = telebot.TeleBot(token)
 
 # Создаем словарь, где будут раниться валюта и количество денег от каждого пользователя, аналог машины состояний
